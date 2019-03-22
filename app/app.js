@@ -21,7 +21,8 @@ function config(
     clientID: CONFIG.AUTH0_CLIENTID,
     domain: CONFIG.AUTH0_DOMAIN,
     responseType: 'token id_token',
-    redirectUri: CONFIG.AUTH0_REDIRECT_URI,
+    redirectUri: window.location.href
+
   });
 
 
