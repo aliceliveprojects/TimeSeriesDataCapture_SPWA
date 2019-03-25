@@ -9,7 +9,7 @@ app.service('runRequestService', ['$rootScope', '$log', '$http', function ($root
                 responseType: 'json'
             }
 
-            config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+            config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
             var url = $rootScope.url + '/apis/components/' + componentId + '/preview';
             
@@ -29,9 +29,9 @@ app.service('runRequestService', ['$rootScope', '$log', '$http', function ($root
                 responseType: 'json'
             }
 
-            var accessToken = localStorage.getItem('accessToken');
+            var accessToken = localStorage.getItem('idToken');
             if (accessToken != null) {
-                config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+                config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
             }
 
             var url = $rootScope.url + '/apis/components/' + componentId;
@@ -92,9 +92,9 @@ app.service('runRequestService', ['$rootScope', '$log', '$http', function ($root
                 responseType: 'json'
             }
 
-            var accessToken = localStorage.getItem('accessToken');
+            var accessToken = localStorage.getItem('idToken');
             if (accessToken != null) {
-                config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+                config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
             }
 
             var url = $rootScope.url + '/apis/components/' + componentId;
@@ -112,7 +112,7 @@ app.service('runRequestService', ['$rootScope', '$log', '$http', function ($root
                 headers: {},
             }
 
-            config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+            config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
 
             var url = $rootScope.url + '/apis/components/' + components[0];

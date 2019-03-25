@@ -19,7 +19,7 @@ function fileStorageAuthenticationDataService(
         var config = {
             headers: {}
         }
-        config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+        config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
         var url = $rootScope.url + '/apis/authenticate';
 
@@ -38,7 +38,7 @@ function fileStorageAuthenticationDataService(
             }
         }
 
-        config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+        config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
         var url = $rootScope.url + '/apis/authenticate';
         return $http.delete(url,config);

@@ -11,7 +11,7 @@ app.service('componentIdsService', ['$rootScope', '$log', '$http', 'authenticati
                 headers: {},
                 responseType: 'json'
             }
-            config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+            config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
             config.params.folderID = folderId;
 
             var url = $rootScope.url + '/apis/components';
@@ -30,7 +30,7 @@ app.service('componentIdsService', ['$rootScope', '$log', '$http', 'authenticati
                 headers: {},
                 responseType: 'json'
             }
-            config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+            config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
 
             var url = $rootScope.url + '/apis/components';

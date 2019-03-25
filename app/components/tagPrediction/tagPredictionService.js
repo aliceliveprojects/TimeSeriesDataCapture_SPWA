@@ -36,7 +36,7 @@ app.service('tagPredictionService', ['$rootScope','$log', '$http', function ($ro
             headers: {},
             responseType: 'json'
         }
-        config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+        config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
         var url = $rootScope.url + '/apis/components/' +componentId + '/tags/';
        
@@ -50,7 +50,7 @@ app.service('tagPredictionService', ['$rootScope','$log', '$http', function ($ro
             headers: {},
             responseType: 'json'
         }
-        config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+        config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
         var url = $rootScope.url + '/apis/components/' +componentId + '/tags/' + tagId;
     

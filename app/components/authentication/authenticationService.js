@@ -33,7 +33,7 @@ function authenticationService(
 
         
         localStorage.setItem('isLoggedIn', sessionParams.isLoggedIn);
-        localStorage.setItem('accessToken', sessionParams.accessToken);
+        localStorage.setItem('idToken', sessionParams.idToken);
         localStorage.setItem('expiresAt', sessionParams.expiresAt);
         localStorage.setItem('profileId', sessionParams.profileId);
         authenticationNotifyService.publishAuth0();
@@ -61,11 +61,11 @@ function authenticationService(
                 var expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime());
                 var sessionParams = {
                     isLoggedIn: false,
-                    accessToken: authResult.idToken,
+                    idToken: authResult.idToken,
                     expiresAt: expiresAt,
                     profileId: null
                 };
-                angularAuth0.client.userInfo(sessionParams.accessToken, function(err, profile){
+                angularAuth0.client.userInfo(authResult.accessToken, function(err, profile){
                     if(!err){
                         sessionParams.profileId  = profile.sub;
                         sessionParams.isLoggedIn = true;
@@ -87,7 +87,7 @@ function authenticationService(
     function logout() {
         localStorage.setItem('expiresAt', 0);
         localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('accessToken');
+        localStorage.removeItem('idToken');
     }
 
 

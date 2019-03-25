@@ -22,7 +22,7 @@ function algorithmsService(
             headers: {},
             responseType: 'json'
         }
-        config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+        config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
         var url = $rootScope.url + '/apis/algorithms';
         return $http.get(url, config)

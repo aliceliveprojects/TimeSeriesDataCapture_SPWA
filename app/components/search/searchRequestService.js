@@ -11,7 +11,7 @@ app.service('searchService', ['$log', '$http','$rootScope', function ($log, $htt
         }
 
         var url = $rootScope.url + '/apis/search';
-        config.headers.Authorization = 'Bearer ' + localStorage.getItem('accessToken');
+        config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
         config.params.query = encodeURI(query);
         
      
