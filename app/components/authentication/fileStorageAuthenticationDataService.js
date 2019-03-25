@@ -28,7 +28,7 @@ function fileStorageAuthenticationDataService(
     }
 
     self.deleteAuthentication = function(){
-        var profileId = (localStorage.getItem('profile'));
+        var profileId = (localStorage.getItem('profileId'));
 
 
         var config = {

@@ -29,7 +29,7 @@ function oneDriveAuthenticationService(
     }
 
     self.setSession = function (token) {
-        var profileId = (localStorage.getItem('profile'));
+        var profileId = (localStorage.getItem('profileId'));
         fileStorageAuthenticationDataService.postAuthentication({ profileID: profileId, storageToken: token }).then(function (result) {
             var expiresAt = JSON.stringify(3600 * 1000 + new Date().getTime());
             localStorage.setItem('oneDriveExpiresAt', expiresAt);

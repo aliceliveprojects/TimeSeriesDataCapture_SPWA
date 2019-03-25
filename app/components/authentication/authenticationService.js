@@ -27,13 +27,15 @@ function authenticationService(
     self.login = login;
     self.logout = logout;
 
-   
+    
 
-    function setSession(authResult) {
-        var expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime());
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('accessToken', authResult.idToken);
-        localStorage.setItem('expiresAt', expiresAt)
+    function setSession(sessionParams) {
+
+        
+        localStorage.setItem('isLoggedIn', sessionParams.isLoggedIn);
+        localStorage.setItem('accessToken', sessionParams.accessToken);
+        localStorage.setItem('expiresAt', sessionParams.expiresAt);
+        localStorage.setItem('profileId', sessionParams.profileId);
         authenticationNotifyService.publishAuth0();
         $state.go('.', {
         }, {
@@ -56,7 +58,24 @@ function authenticationService(
         console.log('go')
         angularAuth0.parseHash(function (err, authResult) {
             if (authResult && authResult.accessToken && authResult.idToken) {
-                setSession(authResult);
+                var expiresAt = JSON.stringify(authResult.expiresIn * 1000 + new Date().getTime());
+                var sessionParams = {
+                    isLoggedIn: false,
+                    accessToken: authResult.idToken,
+                    expiresAt: expiresAt,
+                    profileId: null
+                };
+                angularAuth0.client.userInfo(sessionParams.accessToken, function(err, profile){
+                    if(!err){
+                        sessionParams.profileId  = profile.sub;
+                        sessionParams.isLoggedIn = true;
+                        setSession(sessionParams);
+                    }else{
+                        console.log(err);
+                    }
+                });
+
+                
             } else if (err) {
                 console.log(err);
             }
