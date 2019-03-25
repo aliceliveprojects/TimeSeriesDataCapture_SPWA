@@ -107,7 +107,7 @@ function config(
 
     /// Comment out the line below to run the app
     // without HTML5 mode (will use hashes in routes)
-    $locationProvider.html5Mode(true);
+    //$locationProvider.html5Mode(true);
 
 }
 
