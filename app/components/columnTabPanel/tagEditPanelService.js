@@ -1,5 +1,25 @@
-app.service('tagEditPanelService', ['$log', '$mdDialog','$filter', 'tagPredictionService', function ($log, $mdDialog,$filter, tagPredictionService) {
 
+
+angular.module('app').service('tagEditPanelService',tagEditPanelService);
+
+tagEditPanelService.$inject = [
+    '$log', 
+    '$mdDialog',
+    '$filter', 
+    'tagPredictionService',
+    'columnTabPanelService',
+    'runRequestService'
+]
+
+
+function tagEditPanelService(
+    $log, 
+    $mdDialog,
+    $filter, 
+    tagPredictionService,
+    columnTabPanel,
+    runRequestService
+){
     var self = this;
 
     self.showTagEditPanel = function (ev, componentId, tags) {
@@ -15,7 +35,20 @@ app.service('tagEditPanelService', ['$log', '$mdDialog','$filter', 'tagPredictio
             controller: tagEditPanelController
         }).catch(function (result) {
             if (result != undefined) {
+                runRequestService.getRunV2(result.tabId).then(function(run){
+                    var updatedTags = columnTabPanel.parseTags(run.data.tags)
 
+                    var tabs = columnTabPanel.getTabs();
+                    for(var i=0,length=tabs.length;i<length;i++){
+                        if(tabs[i].id === result.tabId){
+                            tabs[i].tags = updatedTags
+                            break;
+                        }
+                    }
+
+                }).catch(function(err){
+                    console.log(error);
+                })
             }
         })
     }
@@ -88,7 +121,10 @@ app.service('tagEditPanelService', ['$log', '$mdDialog','$filter', 'tagPredictio
                 const deletePromises = difference[1].map(tagPredictionService.deleteTag, { componentId: componentId });
                 Promise.all(deletePromises);
             } 
-            $mdDialog.cancel($scope.extractTags());
+            $mdDialog.cancel({
+                tags : $scope.extractTags(),
+                tabId : componentId
+            });
         }
 
         $scope.cancel = function () {
@@ -151,6 +187,5 @@ app.service('tagEditPanelService', ['$log', '$mdDialog','$filter', 'tagPredictio
 
 
     }
-
-
-}])
+    
+}

@@ -15,6 +15,8 @@ app.service('columnTabPanelService', ['$log', 'runRequestService', 'selectionSer
     self.parseUrlColumns = parseUrlColumns;
     self.parseColumnsUrl = parseColumnsUrl;
 
+    self.parseTags = parseTags;
+
     self.selectColumns = selectColumns;
     self.clearSelection = clearSelection;
 
@@ -55,11 +57,27 @@ app.service('columnTabPanelService', ['$log', 'runRequestService', 'selectionSer
 
     function createRunTabs(runArray) {
         for (var i = 0, n = runArray.length; i < n; i++) {
-            createRunTab(runArray[i].id, runArray[i].runData);
+            createRunTab(runArray[i]);
         }
     }
 
-    function createRunTab(id, data) {
+    function createRunTab(run){
+        var tabObject = {
+            id : run.id
+        }
+        
+        selectionService.addSelectionGroup(run.id);
+
+        var columnNames = Object.keys(run.runData);
+        tabObject.columns = columnNames;
+
+        var tags = parseTags(run.tags)
+        tabObject.tags = tags;
+
+        tabs.set(run.id, tabObject);
+    }
+
+    /*function createRunTab(id, data) {
         selectionService.addSelectionGroup(id);
         var tabObject = {
             id: id,
@@ -68,7 +86,7 @@ app.service('columnTabPanelService', ['$log', 'runRequestService', 'selectionSer
         var columnNames = Object.keys(data);
         tabObject.columns = columnNames;
         tabs.set(id, tabObject);
-    }
+    }*/
 
     function getTabs() {
         var tabsArray = [];
@@ -198,6 +216,21 @@ app.service('columnTabPanelService', ['$log', 'runRequestService', 'selectionSer
                 }
             }
         }
+    }
+
+
+    function parseTags(tagObject) {
+        var tags = [];
+        var tagIds = Object.keys(tagObject);
+
+        for (var i = 0, n = tagIds.length; i < n; i++) {
+            tags.push({
+                id: tagIds[i],
+                tag: tagObject[tagIds[i]]
+            })
+        }
+
+        return tags;
     }
 
     function clearSelection() {

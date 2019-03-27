@@ -45,6 +45,7 @@ function viewController($scope,
     $scope.selectedToggle = selectedToggle;
 
     $scope.tagEdit = tagEdit;
+    $scope.tags = tags;
 
     $scope.exists = exists;
     $scope.activeRunClick = activeRunClick;
@@ -53,7 +54,6 @@ function viewController($scope,
     $scope.isAuthenticated = isAuthenticated;
 
     var tagsArray = [];
-    var tagsCollection = {};
 
 
     if (runData) {
@@ -68,7 +68,6 @@ function viewController($scope,
 
         timeSeriesTrendService.clearTrends();
 
-        tagsCollection = (extractTags(result));
 
         columnTabPanelService.createRunTabs(result);
         $scope.tabs = columnTabPanelService.getTabs();
@@ -99,6 +98,7 @@ function viewController($scope,
 
 
 
+
     function back () {
         var options = {
             location: 'replace',
@@ -124,7 +124,11 @@ function viewController($scope,
     function tagEdit() {
         var runId = ($scope.tabs[$scope.activeTabIndex]).id;
        
-        tagEditPanelService.showTagEditPanel(undefined, runId, tagsArray);
+        tagEditPanelService.showTagEditPanel(undefined, runId, ($scope.tabs[$scope.activeTabIndex]).tags);
+    }
+
+    function tags(){
+        return ($scope.tabs[$scope.activeTabIndex]).tags
     }
     
 
@@ -147,10 +151,6 @@ function viewController($scope,
 
     function isAuthenticated() {
         return authenticationService.isAuthenticated();
-    }
-
-    $scope.tags = function () {
-        return tagsArray;
     }
 
 
@@ -192,19 +192,7 @@ function viewController($scope,
         return tagsCollection;
     }
 
-    function parseTags(tagObject) {
-        var tags = [];
-        var tagIds = Object.keys(tagObject);
-
-        for (var i = 0, n = tagIds.length; i < n; i++) {
-            tags.push({
-                id: tagIds[i],
-                tag: tagObject[tagIds[i]]
-            })
-        }
-
-        return tags;
-    }
+    
 
     function extractData(runArray) {
         var results = [];
