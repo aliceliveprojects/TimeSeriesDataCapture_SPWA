@@ -355,11 +355,10 @@ function timeSeriesGraphService(
 
     //remove trend
     function removeTrend(id, columnName) {
-        timeSeriesTrendService.removeTrend(id, columnName);
-
         var id = $filter('componentIdClassFilter')(id);
         var columnName = $filter('componentIdClassFilter')(columnName);
         graph.select('.run-group').select('.' + id + '.' + columnName).remove();
+        timeSeriesTrendService.removeTrend(id, columnName);
     }
 
     //Transitions the graph and offsets the active trend by the given vectors

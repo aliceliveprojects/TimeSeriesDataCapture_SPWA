@@ -29,10 +29,12 @@ function timeSeriesTrendService() {
         return newTrend;
     }
 
-    self.removeTrend = function (id, columnName) {
-        for (var i = 0, n = trends.length; i < n; i++) {
-            if (trends[i].id === id && trends[i].columnName === columnName) {
-                trends.splice(i, 1);
+
+
+    self.removeTrend = function(id,columnName){
+        for(var i=0,length=trends.length;i<length;i++){
+            if(trends[i].id === id && trends[i].columnName === columnName){
+                trends.splice(i,1);
             }
         }
     }
