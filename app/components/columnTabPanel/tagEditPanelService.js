@@ -22,7 +22,7 @@ function tagEditPanelService(
 ){
     var self = this;
 
-    self.showTagEditPanel = function (ev, componentId, tags) {
+    self.showTagEditPanel = function (ev, componentId, tags,closeFn) {
         $mdDialog.show({
             templateUrl: 'app/components/columnTabPanel/tagEditPanel.html',
             parent: angular.element(document.body),
@@ -42,16 +42,19 @@ function tagEditPanelService(
                     for(var i=0,length=tabs.length;i<length;i++){
                         if(tabs[i].id === result.tabId){
                             tabs[i].tags = updatedTags
+                            closeFn();
                             break;
                         }
                     }
 
                 }).catch(function(err){
-                    console.log(error);
+                    console.log(err);
                 })
             }
         })
     }
+
+   
 
     function tagEditPanelController($scope, $mdDialog, JSTagsCollection, componentId, tags) {
         var intialTags = $filter('tagFilter')(tags);

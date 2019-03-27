@@ -124,7 +124,15 @@ function viewController($scope,
     function tagEdit() {
         var runId = ($scope.tabs[$scope.activeTabIndex]).id;
        
-        tagEditPanelService.showTagEditPanel(undefined, runId, ($scope.tabs[$scope.activeTabIndex]).tags);
+        
+
+        tagEditPanelService.showTagEditPanel(undefined, runId, ($scope.tabs[$scope.activeTabIndex]).tags,function(){
+            // on panel close update tags
+            $scope.$apply(function () {
+               tags();
+            });
+        });
+       
     }
 
     function tags(){
