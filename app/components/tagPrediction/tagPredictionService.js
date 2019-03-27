@@ -34,7 +34,6 @@ app.service('tagPredictionService', ['$rootScope','$log', '$http', function ($ro
     self.addTags = function(componentId,tagArray){
         var config = {
             headers: {},
-            responseType: 'json'
         }
         config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
@@ -48,7 +47,6 @@ app.service('tagPredictionService', ['$rootScope','$log', '$http', function ($ro
      self.deleteTagById = function(componentId,tagId){
         var config = {
             headers: {},
-            responseType: 'json'
         }
         config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
 
