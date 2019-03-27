@@ -57,7 +57,7 @@ function viewController($scope,
 
 
     if (runData) {
-        // TODO : need to test getRunV2 
+      
         result = extractData(runData);
        
 

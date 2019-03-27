@@ -35,7 +35,7 @@ function tagEditPanelService(
             controller: tagEditPanelController
         }).catch(function (result) {
             if (result != undefined) {
-                runRequestService.getRunV2(result.tabId).then(function(run){
+                runRequestService.getRun(result.tabId).then(function(run){
                     var updatedTags = columnTabPanel.parseTags(run.data.tags)
 
                     var tabs = columnTabPanel.getTabs();
