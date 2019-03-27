@@ -130,7 +130,7 @@ function indexController(
 
     function deleteClick() {
         var selected = selectionService.selectedToArray(selectionId);
-        runRequestService.deleteRun(selected[0]).then(function (result) {
+        runRequestService.deleteRun(selected).then(function (result) {
             $log.log('item deleted');
             for (var i = 0; i < $scope.results.length; i++) {
                 if ($scope.results[i].id == selected[0]) {
