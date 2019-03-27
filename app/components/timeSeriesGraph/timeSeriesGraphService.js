@@ -317,8 +317,8 @@ function timeSeriesGraphService(
         //create linear transition of 750 seconds 
         var transition = d3.transition().duration(750).ease(d3.easeLinear);
         //rescale the axis to show the new trend
-        //graph.select('.axis--x').transition(transition).call(xAxis.scale(x));
-        //graph.select('.axis--y').transition(transition).call(yAxis.scale(trend.scaleY));
+        graph.select('.axis--x').transition(transition).call(xAxis.scale(x));
+        graph.select('.axis--y').transition(transition).call(yAxis.scale(trend.scaleY));
 
         //add new trend to the graph DOM
         var run = graph.select('.run-group')
