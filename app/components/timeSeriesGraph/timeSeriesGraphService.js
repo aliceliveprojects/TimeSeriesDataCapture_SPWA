@@ -137,7 +137,7 @@ function timeSeriesGraphService(
         if (options.autoSize) {
             //setup svg graph container
             svg = d3.select('.graph-container')
-                .attr("width", "100%")
+                .attr("width", "98%")
                 .attr("height", "auto")
                 .attr("viewBox", "0 0 1300 600")
                 .attr("preserveAspectRatio", "xMinYMax meet");
