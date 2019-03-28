@@ -163,7 +163,7 @@ function timeSeriesGraphService(
             .on('end', zoomEnd);
 
         //disable double click to zoom
-        svg.call(zoom)
+        graph.call(zoom)
             .on("dblclick.zoom", null);
 
         //detect when ctrl key is pressed
