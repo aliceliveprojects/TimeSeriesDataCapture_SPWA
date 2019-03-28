@@ -44,8 +44,13 @@ function authenticationService(
     }
 
     function isAuthenticated() {
-        var expiresAt = JSON.parse(localStorage.getItem('expiresAt'));
-        return new Date().getTime() < expiresAt;
+        try {
+            var expiresAt = JSON.parse(localStorage.getItem('expiresAt'));
+            return new Date().getTime() < expiresAt;
+        } catch (error) {
+            return false;
+        }
+       
     }
 
     function login() {
