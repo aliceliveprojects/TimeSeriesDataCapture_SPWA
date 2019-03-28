@@ -69,8 +69,9 @@ function indexController(
 
     function searchClick() {
         var tags = searchInputService.getQuery();
+        
         $state.go('.', {
-            query: encodeURI(tags)
+            query: tags
         }, {
                 location: true,
                 reload: true

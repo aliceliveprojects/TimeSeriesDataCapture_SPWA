@@ -32,7 +32,7 @@ app.service('searchInputService', ['$log', '$filter', 'JSTagsCollection', 'tagPr
 
     function populateInput(query) {
         if (query) {
-            inputQueries = new JSTagsCollection(query.split("%20"));
+            inputQueries = new JSTagsCollection(query.split(" "));
         } else {
             inputQueries = new JSTagsCollection();
         }

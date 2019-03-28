@@ -2,8 +2,10 @@ app.service('searchService', ['$log', '$http','$rootScope', function ($log, $htt
 
     var self = this;
 
-    
+    // tags must be delimited by a %20(space)
     self.searchRequest = function (query) {
+       
+
         var config = {
             params: {},
             responseType: 'json',
@@ -12,7 +14,7 @@ app.service('searchService', ['$log', '$http','$rootScope', function ($log, $htt
 
         var url = $rootScope.url + '/apis/search';
         config.headers.Authorization = 'Bearer ' + localStorage.getItem('idToken');
-        config.params.query = encodeURI(query);
+        config.params.query = query;
         
      
         return $http.get(url, config);
