@@ -169,11 +169,11 @@ function timeSeriesGraphService(
             .on("dblclick.zoom", null);
 
         //user is panning/zooming
-        svg.on('click',function(){
-            
+        svg.on('click', function () {
+
         })
 
-     
+
         //detect when ctrl key is pressed
         d3.select('body')
             .on('keydown', function () {
@@ -217,14 +217,14 @@ function timeSeriesGraphService(
             axisLockInitialize();
         }
 
-        if(options.annotation){
+        if (options.annotation) {
             annotationInitialize();
         }
-       
+
 
     }
 
-    function mouseDown(){
+    function mouseDown() {
         user = true;
     }
 
@@ -243,26 +243,12 @@ function timeSeriesGraphService(
 
     //calculate the x domain (largest and smallest values in the x data)
     function calculateXDomain(scale, data) {
-        scale.domain([
-            d3.min(data, function (d) {
-                return d.x;
-            }),
-            d3.max(data, function (d) {
-                return d.x;
-            })
-        ])
+        scale.domain(Xdomain());
     }
 
     //calculate the y domain (largest and smallest values in the y data)
     function calculateYDomain(scale, data) {
-        scale.domain([
-            d3.min(data, function (d) {
-                return d.y;
-            }),
-            d3.max(data, function (d) {
-                return d.y;
-            })
-        ])
+        scale.domain(Ydomain());
     }
 
 
@@ -287,13 +273,13 @@ function timeSeriesGraphService(
             }
         }
 
-        if(!runData){
+        if (!runData) {
             throw new Error("data is in the wrong format");
         }
-        if(!('Time' in runData)){
+        if (!('Time' in runData)) {
             throw new Error("Time column in data not found");
         }
-        if(!(columnY in runData)){
+        if (!(columnY in runData)) {
             throw new Error(`${columnY} column in data not found`)
         }
 
@@ -305,15 +291,51 @@ function timeSeriesGraphService(
                 })
             }
             return xyData;
-        } 
+        }
     }
 
+    function Ydomain() {
+        var max = Number.NEGATIVE_INFINITY;
+        var min = Number.POSITIVE_INFINITY;
+        for (var i = 0, n = data.length; i < n; i++) {
+            var columns = Object.keys(data[i].runData);
+            for (var j = 0, m = columns.length; j < m; j++) {
+                if (columns[j] === "Time") {
+                    continue;
+                }
+                if (timeSeriesTrendService.getTrend(data[i].id, columns[j])) {
+                    max = Math.max(...(data[i].runData[columns[j]]), max);
+                    min = Math.min(...(data[i].runData[columns[j]]), min);
+                }
+            }
+        }
+        return [min, max];
+    }
+
+    function Xdomain() {
+        var max = Number.NEGATIVE_INFINITY;
+        var min = Number.POSITIVE_INFINITY;
+
+        for (var i = 0, n = data.length; i < n; i++) {
+            var columns = Object.keys(data[i].runData);
+            for (var j = 0, m = columns.length; j < m; j++) {
+                if (columns[j] !== "Time") {
+                    continue;
+                }
+                max = Math.max(...(data[i].runData[columns[j]]), max);
+                min = Math.min(...(data[i].runData[columns[j]]), min);
+            }
+        }
+        return [min, max];
+    }
+
+
     // when active column changes
-    function activeChange(){
+    function activeChange() {
         var runId = activeColumn.getRun();
         var columnY = activeColumn.getColumn();
 
-        var trendData = extractTrendLineData(runId,columnY);
+        var trendData = extractTrendLineData(runId, columnY);
 
         offsetLine.xcoor = trendData[0].x;
         offsetLine.ycoor = trendData[0].y;
@@ -341,7 +363,7 @@ function timeSeriesGraphService(
             offsetLine.ycoor = trend.data[0].y;
         }
 
-     
+
 
         //add new trend to the graph DOM
         var run = graph.select('.run-group')
@@ -375,17 +397,17 @@ function timeSeriesGraphService(
         graph.select('.axis--y').transition(transition).call(yAxis.scale(y));
 
         svg.call(zoom).transition()
-                .duration(1500)
-                .call(zoom.transform, d3.zoomIdentity
-                    .translate(1, 1)
-                    .scale(1)
-                )
-       
+            .duration(1500)
+            .call(zoom.transform, d3.zoomIdentity
+                .translate(1, 1)
+                .scale(1)
+            )
+
     }
 
     //remove trend
     function removeTrend(id, columnName) {
-        
+
         var id = $filter('componentIdClassFilter')(id);
         var columnName = $filter('componentIdClassFilter')(columnName);
         graph.select('.run-group').select('.' + id + '.' + columnName).remove();
@@ -532,7 +554,7 @@ function timeSeriesGraphService(
             if (!line.empty()) {
                 //only re-render the active trend
                 line.attr('d', function (trend) {
-                    
+
                     var line = d3.line()
                         .x(function (d) { return xt(d.x) })
                         .y(function (d) { return yt(d.y) })
@@ -569,7 +591,7 @@ function timeSeriesGraphService(
             var xPoint = xScaler(this.xcoor);
             var yPoint = yScaler(this.ycoor);
 
-            
+
             if (yPoint > this.boundryHeight) {
                 yPoint = this.boundryHeight;
             } else if (yPoint < 0) {
@@ -582,7 +604,7 @@ function timeSeriesGraphService(
                 xPoint = 0;
             }
 
-         
+
 
             this.node.attr('x2', xPoint)
                 .attr('y2', yPoint);
@@ -614,7 +636,7 @@ function timeSeriesGraphService(
             this.node.style('stroke', 'rgb(255,0,0)')
                 .style('stroke-width', '2');
         }
-        this.setStartPos = function(x,y){
+        this.setStartPos = function (x, y) {
             this.xcoor = x;
             this.ycoor = y;
         }
