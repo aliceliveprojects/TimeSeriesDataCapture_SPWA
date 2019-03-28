@@ -26,10 +26,13 @@ function timeSeriesGraphService(
     self.addTrend = addTrend;
     self.removeTrend = removeTrend;
 
+    self.activeChange = activeChange;
+
     self.transition = transition;
 
     graphEventEmitterService.subscribeAddTrend(self.addTrend);
     graphEventEmitterService.subscribeRemoveTrend(self.removeTrend);
+    activeColumn.subscribeActiveChange(self.activeChange);
 
     //data for all graphs currently being viewed
     var data;
@@ -293,6 +296,18 @@ function timeSeriesGraphService(
         } 
     }
 
+    // when active column changes
+    function activeChange(){
+        var runId = activeColumn.getRun();
+        var columnY = activeColumn.getColumn();
+
+        var trendData = extractTrendLineData(runId,columnY);
+
+        offsetLine.xcoor = trendData[0].x;
+        offsetLine.ycoor = trendData[0].y;
+
+    }
+
     //Adds a new trend line
     //  runId which run does the trend belong to
     //  columnY which column does the trend belong to (e.g. voltage) 
@@ -300,11 +315,11 @@ function timeSeriesGraphService(
         var trendData = extractTrendLineData(runId, columnY);
 
         //create new trend
-        var trend = timeSeriesTrendService.addTrend(runId, columnY, d3.scaleLinear(), d3.scaleLinear(), 'Time', columnY, trendData);
+        var trend = timeSeriesTrendService.addTrend(runId, columnY, trendData);
         //setup new trend range
-        trend.scaleY.range([height, 0]);
+        y.range([height, 0]);
         //setup new trends domains
-        calculateYDomain(trend.scaleY, trend.data);
+        calculateYDomain(y, trend.data);
         calculateXDomain(x, trend.data);
 
         //if new trend added is the active trend reset offsetLine co-ordinates
@@ -314,11 +329,7 @@ function timeSeriesGraphService(
             offsetLine.ycoor = trend.data[0].y;
         }
 
-        //create linear transition of 750 seconds 
-        var transition = d3.transition().duration(750).ease(d3.easeLinear);
-        //rescale the axis to show the new trend
-        graph.select('.axis--x').transition(transition).call(xAxis.scale(x));
-        graph.select('.axis--y').transition(transition).call(yAxis.scale(trend.scaleY));
+     
 
         //add new trend to the graph DOM
         var run = graph.select('.run-group')
@@ -326,8 +337,9 @@ function timeSeriesGraphService(
             .data([trend])
             .enter().append('g')
             .attr('class', function (d) {
+                console.log(d)
                 var id = $filter('componentIdClassFilter')(d.id);
-                var columnName = $filter('componentIdClassFilter')(d.yLabel);
+                var columnName = $filter('componentIdClassFilter')(d.columnName);
                 return 'run ' + id + ' ' + columnName;
             });
 
@@ -340,16 +352,29 @@ function timeSeriesGraphService(
             .attr('d', function (trend) {
                 var line = d3.line()
                     .x(function (d) { return x(d.x); })
-                    .y(function (d) { return trend.scaleY(d.y); })
+                    .y(function (d) { return y(d.y); })
                 return line(trend.data)
             })
             .style('stroke', trendColour)
 
+        //create linear transition of 750 seconds 
+        var transition = d3.transition().duration(750).ease(d3.easeLinear);
+        //rescale the axis to show the new trend
+        graph.select('.axis--x').transition(transition).call(xAxis.scale(x));
+        graph.select('.axis--y').transition(transition).call(yAxis.scale(y));
+
+        svg.call(zoom).transition()
+                .duration(1500)
+                .call(zoom.transform, d3.zoomIdentity
+                    .translate(1, 1)
+                    .scale(1)
+                )
        
     }
 
     //remove trend
     function removeTrend(id, columnName) {
+        
         var id = $filter('componentIdClassFilter')(id);
         var columnName = $filter('componentIdClassFilter')(columnName);
         graph.select('.run-group').select('.' + id + '.' + columnName).remove();
@@ -463,7 +488,7 @@ function timeSeriesGraphService(
         graph.selectAll('.line')
             .attr('d', function (trend) {
 
-                yt = t.rescaleY(trend.scaleY);
+                yt = t.rescaleY(y);
 
 
 
@@ -472,10 +497,7 @@ function timeSeriesGraphService(
                 offsetLine.renderWhenPanning(xt, yt);
                 var line = d3.line()
                     .x(function (d) { return xt(d.x); })
-                    .y(function (d) {
-                        var ytDy = yt(d.y);
-                        return ytDy;
-                    })
+                    .y(function (d) { return yt(d.y); })
                 return line(trend.data)
             });
 
@@ -484,47 +506,29 @@ function timeSeriesGraphService(
         // when user pans the offset graph position is reset back to the current vectors positions
         offsetVector = t;
 
-        /* //update the url state
-        $state.go('.', {
-            viewVector: JSON.stringify(t),
-            offsetVector: JSON.stringify({ x: 0, y: 0 })
-        }) */
     }
 
     //Offsetting thr active trend
     function offsetting(t) {
         //d3 rescale y axis
         var xt = t.rescaleX(x);
-
+        var yt = t.rescaleY(y);
         isOffsetting = true;
 
         if (activeColumn.getRun() && activeColumn.getColumn()) {
             var line = graph.select('.run-group').select('.' + $filter('componentIdClassFilter')(activeColumn.getRun()) + '.' + $filter('componentIdClassFilter')(activeColumn.getColumn())).selectAll('.line');
-            var yt;
-
             //check if there is a active trend
             if (!line.empty()) {
                 //only re-render the active trend
                 line.attr('d', function (trend) {
-                    yt = t.rescaleY(trend.scaleY);
+                    
                     var line = d3.line()
                         .x(function (d) { return xt(d.x) })
                         .y(function (d) { return yt(d.y) })
 
                     return line(trend.data);
                 })
-
-                //find the difference between the offset vector and current vector, to store in the url
-                //var xDiffrence = t.x - currentVector.x;
-                //var yDiffrence = t.y - currentVector.y;
-
                 offsetVector = t;
-
-                /*  //update url state
-                 $state.go('.', {
-                     offsetVector: JSON.stringify({ x: xDiffrence, y: yDiffrence })
-                 }) */
-                //render offsetline
                 offsetLine.renderWhenOffsetting(xt, yt);
             }
         }
@@ -554,6 +558,7 @@ function timeSeriesGraphService(
             var xPoint = xScaler(this.xcoor);
             var yPoint = yScaler(this.ycoor);
 
+            
             if (yPoint > this.boundryHeight) {
                 yPoint = this.boundryHeight;
             } else if (yPoint < 0) {
@@ -565,6 +570,8 @@ function timeSeriesGraphService(
             } else if (xPoint < 0) {
                 xPoint = 0;
             }
+
+         
 
             this.node.attr('x2', xPoint)
                 .attr('y2', yPoint);
@@ -595,6 +602,10 @@ function timeSeriesGraphService(
                 .attr('y2', yPoint);
             this.node.style('stroke', 'rgb(255,0,0)')
                 .style('stroke-width', '2');
+        }
+        this.setStartPos = function(x,y){
+            this.xcoor = x;
+            this.ycoor = y;
         }
     }
 

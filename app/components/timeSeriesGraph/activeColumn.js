@@ -18,6 +18,11 @@ function activeColumn() {
 
     self.isActive = isActive;
 
+    self.clear = clear;
+
+    self.subscribeActiveChange = subscribeActiveChange;
+    self.publishActiveChange = publishActiveChange;
+
     function getColumn(){
         return column;
     }
@@ -36,6 +41,22 @@ function activeColumn() {
 
     function isActive(runId,columnName){
         return (run === runId && column === columnName);
+    }
+
+    function clear(){
+        column = undefined;
+        run = undefined;
+    }
+
+    var changeActiveSubs = [];
+    function subscribeActiveChange(fn){
+        changeActiveSubs.push(fn);
+    }
+
+    function publishActiveChange(){
+        for(var i=0,len = changeActiveSubs.length;i<len;i++){
+            changeActiveSubs[i]();
+        }
     }
 
 }

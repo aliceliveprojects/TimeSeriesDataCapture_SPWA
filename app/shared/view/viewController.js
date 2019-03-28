@@ -67,7 +67,7 @@ function viewController($scope,
         columnTabPanelService.clearSelection();
 
         timeSeriesTrendService.clearTrends();
-
+        activeColumn.clear()
 
         columnTabPanelService.createRunTabs(result);
         $scope.tabs = columnTabPanelService.getTabs();
@@ -186,6 +186,7 @@ function viewController($scope,
         var active = runColumn.split('+');
         activeColumn.setRun(active[0]);
         activeColumn.setColumn(active[1]);
+        activeColumn.publishActiveChange();
     }
 
 

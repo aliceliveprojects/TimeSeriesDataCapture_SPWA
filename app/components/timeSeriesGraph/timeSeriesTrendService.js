@@ -10,21 +10,17 @@ function timeSeriesTrendService() {
 
     var trends = [];
 
-    function trendLine(id, columnName, scaleX, scaleY, xLabel, yLabel, data = []) {
+    function trendLine(id, columnName,data = []) {
         this.id = id,
             this.columnName = columnName,
-            this.scaleX = scaleX,
-            this.scaleY = scaleY,
-            this.xLabel = xLabel,
-            this.yLabel = yLabel,
             this.data = data
     }
 
 
 
 
-    self.addTrend = function (id, columnName, scaleX, scaleY, xLabel, yLabel, data) {
-        var newTrend = new trendLine(id, columnName, scaleX, scaleY, xLabel, yLabel, data);
+    self.addTrend = function (id, columnName, data) {
+        var newTrend = new trendLine(id, columnName, data);
         trends.push(newTrend);
         return newTrend;
     }
