@@ -263,7 +263,8 @@ function timeSeriesGraphService(
 
     //extract trend line data
     function extractTrendLineData(runId, columnY) {
-        var runData = null;
+        var runData;
+        var xyData = [];
 
         for (var i = 0; i < data.length; i++) {
             if (data[i].id === runId) {
@@ -271,8 +272,15 @@ function timeSeriesGraphService(
             }
         }
 
-
-        var xyData = [];
+        if(!runData){
+            throw new Error("data is in the wrong format");
+        }
+        if(!('Time' in runData)){
+            throw new Error("Time column in data not found");
+        }
+        if(!(columnY in runData)){
+            throw new Error(`${columnY} column in data not found`)
+        }
 
         if (runData) {
             for (var i = 0; i < runData['Time'].length; i++) {
@@ -282,11 +290,7 @@ function timeSeriesGraphService(
                 })
             }
             return xyData;
-        } else {
-            throw new Error("data in wrong format");
-        }
-
-
+        } 
     }
 
     //Adds a new trend line
@@ -341,21 +345,15 @@ function timeSeriesGraphService(
             })
             .style('stroke', trendColour)
 
-        //transition the graph to show the new trend
-        svg.call(zoom).transition()
-            .call(zoom.transform, d3.zoomIdentity
-                .scale(1)
-                .translate(0, 0)
-            )
+       
     }
 
     //remove trend
     function removeTrend(id, columnName) {
-        timeSeriesTrendService.removeTrend(id, columnName);
-
         var id = $filter('componentIdClassFilter')(id);
         var columnName = $filter('componentIdClassFilter')(columnName);
         graph.select('.run-group').select('.' + id + '.' + columnName).remove();
+        timeSeriesTrendService.removeTrend(id, columnName);
     }
 
     //Transitions the graph and offsets the active trend by the given vectors
