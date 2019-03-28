@@ -7,7 +7,7 @@ timeSeriesGraphService.$inject = [
     'timeSeriesTrendService',
     'annotationsService',
     'graphEventEmitterService',
-    'activeColumn'
+    'activeColumn',
 ];
 
 
@@ -22,6 +22,8 @@ function timeSeriesGraphService(
     var self = this;
 
     self.graphInit = graphInit;
+
+    self.mouseDown = mouseDown;
 
     self.addTrend = addTrend;
     self.removeTrend = removeTrend;
@@ -166,6 +168,12 @@ function timeSeriesGraphService(
         graph.call(zoom)
             .on("dblclick.zoom", null);
 
+        //user is panning/zooming
+        svg.on('click',function(){
+            
+        })
+
+     
         //detect when ctrl key is pressed
         d3.select('body')
             .on('keydown', function () {
@@ -214,6 +222,10 @@ function timeSeriesGraphService(
         }
        
 
+    }
+
+    function mouseDown(){
+        user = true;
     }
 
     //craetes two axis locks, one for y and one for x
@@ -337,7 +349,6 @@ function timeSeriesGraphService(
             .data([trend])
             .enter().append('g')
             .attr('class', function (d) {
-                console.log(d)
                 var id = $filter('componentIdClassFilter')(d.id);
                 var columnName = $filter('componentIdClassFilter')(d.columnName);
                 return 'run ' + id + ' ' + columnName;

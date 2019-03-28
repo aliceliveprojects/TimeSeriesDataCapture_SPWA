@@ -52,6 +52,8 @@ function viewController($scope,
     $scope.isActiveColumn = isActiveColumn;
 
     $scope.isAuthenticated = isAuthenticated;
+    
+    $scope.mouseDown = timeSeriesGraphService.mouseDown;
 
     var tagsArray = [];
 
